@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36202.13 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRDOAssignment", "DRDOAssignment.csproj", "{B9017F00-6677-A794-E635-A841BCB8E926}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9017F00-6677-A794-E635-A841BCB8E926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9017F00-6677-A794-E635-A841BCB8E926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9017F00-6677-A794-E635-A841BCB8E926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9017F00-6677-A794-E635-A841BCB8E926}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B3A9EDD2-F719-489A-91F6-DF540033DFC2}
+	EndGlobalSection
+EndGlobal

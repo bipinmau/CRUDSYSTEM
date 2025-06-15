@@ -1,0 +1,91 @@
+@page
+@model DRDOAssignment.Pages.CustomerInfos.IndexModel
+@{
+    ViewData["Title"] = "Customer List";
+}
+
+<h1>Customer List</h1>
+<p>
+    <a asp-page="Create" class="btn btn-primary">Add Customer</a>
+</p>
+<table class="table table-bordered" id="customerTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>State</th>
+            <th>District</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            loadCustomers();
+
+            function loadCustomers() {
+                $.ajax({
+                    url: '/api/Customer',
+                    type: 'GET',
+                    headers: {
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (data) {
+                        var tbody = $('#customerTable tbody');
+                        tbody.empty();
+                        $.each(data, function (index, item) {
+                            var row = $('<tr>');
+                            row.append($('<td>').text(item.name));
+                            row.append($('<td>').text(item.genderName));
+                            row.append($('<td>').text(item.stateName));
+                            row.append($('<td>').text(item.districtName));
+                            
+                            var actions = $('<td>');
+                            actions.append($('<a>')
+                                .attr('href', '/CustomerInfos/Edit?id=' + item.id)
+                                .addClass('btn btn-sm btn-warning')
+                                .text('Edit'));
+                            actions.append(' ');
+                            actions.append($('<button>')
+                                .addClass('btn btn-sm btn-danger')
+                                .text('Delete')
+                                .click(function () {
+                                    if (confirm('Are you sure you want to delete this customer?')) {
+                                        deleteCustomer(item.id);
+                                    }
+                                }));
+                            row.append(actions);
+                            
+                            tbody.append(row);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error loading customers:', error);
+                        alert('Error loading customers. Please try again.');
+                    }
+                });
+            }
+
+            function deleteCustomer(id) {
+                $.ajax({
+                    url: '/api/Customer/' + id,
+                    type: 'DELETE',
+                    headers: {
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function () {
+                        loadCustomers();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error deleting customer:', error);
+                        alert('Error deleting customer. Please try again.');
+                    }
+                });
+            }
+        });
+    </script>
+} 

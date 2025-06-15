@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "DRDOAssignment.Controllers.DistrictController",
+    "Method": "GetDistrictsByState",
+    "RelativePath": "api/District/GetByState/{stateId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "stateId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

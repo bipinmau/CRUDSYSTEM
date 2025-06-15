@@ -1,0 +1,31 @@
+﻿@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Error</h1>
+    @if (Model.ShowRequestId)
+    {
+        <p>
+            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        </p>
+    }
+    
+    @if (Model.IsDevelopment)
+    {
+        <div class="alert alert-danger">
+            <h3>Development Mode Error</h3>
+            <p>@Model.ErrorMessage</p>
+            <p>@Model.StackTrace</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <h3>An error occurred while processing your request.</h3>
+            <p>We apologize for the inconvenience. Please try again later.</p>
+        </div>
+    }
+</div>

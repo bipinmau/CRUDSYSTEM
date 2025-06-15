@@ -1,0 +1,83 @@
+@page
+@model DRDOAssignment.Pages.States.CreateModel
+@{
+    ViewData["Title"] = "Create State";
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>Create State</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post" id="createForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="State.Name" class="form-label">State Name</label>
+                    <input asp-for="State.Name" class="form-control" placeholder="Enter state name" />
+                    <span asp-validation-for="State.Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Create
+                    </button>
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function () {
+            // Show success message if exists
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                </text>
+            }
+
+            // Handle form submission
+            $('#createForm').on('submit', function (e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Validation Error!',
+                        text: 'Please check the form for errors.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+
+            // Show validation errors if any
+            @if (!ModelState.IsValid)
+            {
+                <text>
+                Swal.fire({
+                    title: 'Validation Error!',
+                    text: '@Html.Raw(string.Join("\\n", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)))',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                </text>
+            }
+        });
+    </script>
+} 

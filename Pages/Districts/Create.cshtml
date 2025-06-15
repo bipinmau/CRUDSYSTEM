@@ -1,0 +1,93 @@
+@page
+@model DRDOAssignment.Pages.Districts.CreateModel
+@{
+    ViewData["Title"] = "Create District";
+}
+
+<div class="container">
+    <h1>Create District</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form method="post" id="createDistrictForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group mb-3">
+                    <label asp-for="District.Name" class="control-label">District Name</label>
+                    <input asp-for="District.Name" class="form-control" required maxlength="50" />
+                    <span asp-validation-for="District.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="District.StateId" class="control-label">State</label>
+                    <select asp-for="District.StateId" asp-items="Model.States" class="form-control" required>
+                        <option value="">-- Select State --</option>
+                    </select>
+                    <span asp-validation-for="District.StateId" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            // Show success message if exists
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["SuccessMessage"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                </text>
+            }
+
+            // Form submission handling
+            $("#createDistrictForm").on("submit", function (e) {
+                e.preventDefault();
+                
+                // Clear previous validation messages
+                $(".text-danger").empty();
+                
+                // Validate form
+                if (!$(this).valid()) {
+                    Swal.fire({
+                        title: 'Validation Error',
+                        text: 'Please fill in all required fields correctly.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+
+                // Submit form if validation passes
+                this.submit();
+            });
+
+            // Show validation errors if any
+            @if (!ModelState.IsValid)
+            {
+                <text>
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please check the form for errors.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                </text>
+            }
+
+            // Real-time validation
+            $("input, select").on("change", function() {
+                $(this).valid();
+            });
+        });
+    </script>
+} 

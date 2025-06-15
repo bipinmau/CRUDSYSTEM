@@ -1,0 +1,134 @@
+@page
+@model DRDOAssignment.Pages.CustomerInfos.CreateModel
+@{
+    ViewData["Title"] = "Add Customer";
+}
+
+<h1>Add Customer</h1>
+
+<form id="createForm" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group mb-3">
+        <label asp-for="Customer.Name"></label>
+        <input asp-for="Customer.Name" class="form-control" id="Customer_Name" />
+        <span asp-validation-for="Customer.Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Customer.GenderId"></label>
+        <select asp-for="Customer.GenderId" asp-items="Model.GenderList" class="form-control" id="Customer_GenderId">
+            <option value="">Select Gender</option>
+        </select>
+        <span asp-validation-for="Customer.GenderId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>State</label>
+        <select class="form-control" id="stateSelect" required>
+            <option value="">Select State</option>
+            @foreach (var state in Model.StateList)
+            {
+                <option value="@state.Value">@state.Text</option>
+            }
+        </select>
+        <span class="text-danger" id="stateError"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Customer.DistrictId"></label>
+        <select asp-for="Customer.DistrictId" class="form-control" id="Customer_DistrictId" required>
+            <option value="">Select District</option>
+        </select>
+        <span asp-validation-for="Customer.DistrictId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            // Load Districts on State change
+            $('#stateSelect').change(function () {
+                var stateId = $(this).val();
+                if (stateId) {
+                    $.ajax({
+                        url: '/api/District/GetByState/' + stateId,
+                        type: 'GET',
+                        success: function (data) {
+                            var options = '<option value="">Select District</option>';
+                            $.each(data, function (index, item) {
+                                options += '<option value="' + item.id + '">' + item.name + '</option>';
+                            });
+                            $('#Customer_DistrictId').html(options);
+                            $('#stateError').text('');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error loading districts:', error);
+                            $('#Customer_DistrictId').html('<option value="">Select District</option>');
+                            $('#stateError').text('Error loading districts. Please try again.');
+                        }
+                    });
+                } else {
+                    $('#Customer_DistrictId').html('<option value="">Select District</option>');
+                }
+            });
+
+            // Handle form submission
+            $('#createForm').submit(function (e) {
+                e.preventDefault();
+
+                // Clear previous errors
+                $('.text-danger').text('');
+
+                // Validate state selection
+                if (!$('#stateSelect').val()) {
+                    $('#stateError').text('Please select a state');
+                    return false;
+                }
+
+                // Validate district selection
+                if (!$('#Customer_DistrictId').val()) {
+                    $('#Customer_DistrictId').siblings('.text-danger').text('Please select a district');
+                    return false;
+                }
+
+                if ($(this).valid()) {
+                    var formData = {
+                        name: $('#Customer_Name').val().trim(),
+                        genderId: parseInt($('#Customer_GenderId').val()),
+                        districtId: parseInt($('#Customer_DistrictId').val())
+                    };
+
+                    $.ajax({
+                        url: '/api/Customer',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(formData),
+                        success: function () {
+                            window.location.href = '/CustomerInfos/Index';
+                        },
+                        error: function (xhr) {
+                            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                                Object.keys(xhr.responseJSON.errors).forEach(function (key) {
+                                    var sanitizedKey = key.replace(/[^a-zA-Z0-9_]/g, '_');
+                                    var errorMessage = xhr.responseJSON.errors[key].join(', ');
+                                    $('#' + sanitizedKey).siblings('.text-danger').text(errorMessage);
+                                });
+                            } else {
+                                console.error('Error creating customer:', xhr.statusText);
+                                alert('Error creating customer. Please try again.');
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
